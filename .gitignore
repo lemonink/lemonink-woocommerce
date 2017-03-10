@@ -1,0 +1,7 @@
+/tmp
+/dist
+/vendor
+/dummy/wp-config.php
+/dummy/wp-content/cache
+/dummy/wp-content/upgrade
+/dummy/wp-content/uploads
