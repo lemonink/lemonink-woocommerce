@@ -1,0 +1,8 @@
+#!/bin/bash
+
+bin/build
+svn checkout https://plugins.svn.wordpress.org/lemonink/ svn
+cp -r dist/* svn/trunk/
+cd svn
+svn add trunk/*
+svn commit -m "Automatic update"

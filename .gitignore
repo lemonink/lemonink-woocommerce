@@ -1,5 +1,6 @@
 /tmp
 /dist
+/svn
 /vendor
 /dummy/wp-config.php
 /dummy/wp-content/cache
