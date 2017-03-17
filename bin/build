@@ -3,6 +3,6 @@
 composer install
 cp -r src/* dist/
 cp LICENSE dist/
-mv dist/ lemonink
-zip -r -X tmp/lemonink.zip lemonink
-mv lemonink dist
+#mv dist/ lemonink
+#zip -r -X tmp/lemonink.zip lemonink
+#mv lemonink dist

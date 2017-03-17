@@ -1,0 +1,8 @@
+#!/bin/bash
+
+bin/build
+svn checkout https://plugins.svn.wordpress.org/lemonink/ svn --username=piotrek@lemonink.co --password=Tv@2Lay@MZq7Ae4uYGWqfGc@9dHFN@
+cp -r dist/* svn/trunk/
+cd svn
+svn add trunk/*
+svn commit -m "Automatic update" --username=piotrek@lemonink.co --password=Tv@2Lay@MZq7Ae4uYGWqfGc@9dHFN@
