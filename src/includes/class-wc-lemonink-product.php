@@ -27,6 +27,10 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			add_action( 'woocommerce_process_product_meta_simple', array( $this, 'generate_product_files' ) );
 
+			add_filter( 'woocommerce_downloadable_file_allowed_mime_types', array( $this, 'allow_ebook_mime_types' ) );
+
+			add_filter( 'woocommerce_downloadable_file_exists', array( $this, 'validate_master_file_exists' ), 10, 2);
+
 			return true;
 		}
 
@@ -97,6 +101,10 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				if ( isset ( $_POST['_li_master_id'] ) ) {
 					update_post_meta( $product_id, '_li_master_id', $_POST['_li_master_id'] );
 				}
+
+				if ( get_post_meta( $product_id, '_li_lemoninkable', true ) == "yes" && !$this->validate_master_file_exists( false, $_POST['_li_master_id']) ) {
+					WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The master file with ID %s does not exist on the server.', 'woocommerce' ), '<code>' . $_POST['_li_master_id'] . '</code>' ) );
+				}
 			}
 		}
 
@@ -107,16 +115,39 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 				$files = array();
 				
-				foreach ( $master->getFormats() as $format ) {
-					$file = $master_id . '.' . $format;
-					$download_id = substr( md5( "$file" ), 4 );
-					$files["_li_$download_id"] = array(
-						'name' => strtoupper($format),
-						'file' => $file
-					);
+				if ( $master ) {
+					foreach ( $master->getFormats() as $format ) {
+						$file = $master_id . '.' . $format;
+						$download_id = substr( md5( "$file" ), 4 );
+						$files["_li_$download_id"] = array(
+							'name' => strtoupper($format),
+							'file' => $file
+						);
+					}
 				}
 
 				update_post_meta( $product_id, '_downloadable_files', $files );
+			}
+		}
+
+		public function allow_ebook_mime_types( $types ) {
+			$ebook_types = array(
+				'epub' => 'application/epub+zip',
+				'mobi' => 'application/x-mobipocket-ebook'
+			);
+
+			return array_merge( $types, $ebook_types );
+		}
+
+		public function validate_master_file_exists( $exists_on_disk, $file_url ) {
+			if ( !$exists_on_disk ) {
+				$master_id = preg_replace( '/\.([^.]+)$/', '', $file_url);
+				
+				$master = $this->settings->get_api_client()->find( 'master', $master_id );
+
+				return !!$master;
+			} else {
+				return $exists_on_disk;
 			}
 		}
 	}
