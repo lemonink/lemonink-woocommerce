@@ -1,8 +1,12 @@
 #!/bin/bash
 
+VERSION=$1
 bin/build
 svn checkout https://plugins.svn.wordpress.org/lemonink/ svn
+mv dist/assets/* svn/assets/
 cp -r dist/* svn/trunk/
 cd svn
-svn add trunk/*
-svn commit -m "Automatic update"
+svn cp trunk tags/$VERSION
+svn add *
+svn commit -m "Tagging version $VERSION"
+rm -rf dist

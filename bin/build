@@ -1,6 +1,7 @@
 #!/bin/bash
 
 composer install
+mkdir dist
 cp -r src/* dist/
 cp LICENSE dist/
 #mv dist/ lemonink
