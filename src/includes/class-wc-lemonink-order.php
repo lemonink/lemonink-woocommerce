@@ -29,7 +29,10 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 		}
 		
 		public function create_transaction( $download_data ) {
-			if ( $this->is_lemoninkable_download( $download_data['download_id'] ) ) {
+			$meta_prefix = "_li_product_{$download_data['product_id']}_";
+			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', yes );
+
+			if ( !$transaction_exists && $this->is_lemoninkable_download( $download_data['download_id'] ) ) {
 				$product = wc_get_product( $download_data['product_id'] );
 				$master_id = get_post_meta( $product->get_id(), '_li_master_id', yes );
 					
@@ -38,8 +41,6 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 				$transaction->setWatermarkValue( $download_data['user_email'] );
 
 				$this->settings->get_api_client()->save($transaction);
-				
-				$meta_prefix = "_li_product_{$download_data['product_id']}_";
 
 				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction->getId(), true );
 				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
@@ -56,7 +57,8 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 			foreach ( $files as $download_id => $file ) {
 				if ( $this->is_lemoninkable_download( $download_id ) ) {
-					$files[$download_id]['download_url'] = $transaction->getUrl();
+					$format = strtolower($files[$download_id]['name']);
+					$files[$download_id]['download_url'] = $transaction->getUrl($format);
 				}
 			}
 

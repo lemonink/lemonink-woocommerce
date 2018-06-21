@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "6f594445a43b973f3d0a6a37e1b66dec",
@@ -176,7 +176,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-02-28 22:51:22"
+            "time": "2017-02-28T22:51:22+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -227,7 +227,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20 10:07:11"
+            "time": "2016-12-20T10:07:11+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -292,7 +292,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-02-27 10:51:17"
+            "time": "2017-02-27T10:51:17+00:00"
         },
         {
             "name": "lemonink/lemonink-php",
@@ -300,12 +300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
-                "reference": "fb355732fb947ee781a7732109dd80dedbaa7186"
+                "reference": "0495856abe49c724625eb31443f7f354361af585"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/fb355732fb947ee781a7732109dd80dedbaa7186",
-                "reference": "fb355732fb947ee781a7732109dd80dedbaa7186",
+                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/0495856abe49c724625eb31443f7f354361af585",
+                "reference": "0495856abe49c724625eb31443f7f354361af585",
                 "shasum": ""
             },
             "require": {
@@ -338,7 +338,7 @@
                 "api",
                 "watermarking"
             ],
-            "time": "2017-03-09 14:51:59"
+            "time": "2018-06-21T06:36:41+00:00"
         },
         {
             "name": "psr/http-message",
@@ -388,7 +388,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "wpackagist-plugin/woocommerce",
@@ -400,8 +400,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/woocommerce.zip",
-                "reference": "trunk",
+                "url": "https://downloads.wordpress.org/plugin/woocommerce.zip?timestamp=1529516303",
+                "reference": null,
                 "shasum": null
             },
             "require": {
@@ -409,7 +409,7 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/woocommerce/",
-            "time": "2017-02-17T18:38:14+00:00"
+            "time": "2018-06-20T17:38:23+00:00"
         }
     ],
     "packages-dev": [],
