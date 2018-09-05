@@ -38,6 +38,10 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
 			}
 		}
+
+		private function is_lemoninkable_download( $download_id ) {
+				return substr( $download_id, 0, 4 ) === '_li_';
+		}
 	}
 
 endif;
