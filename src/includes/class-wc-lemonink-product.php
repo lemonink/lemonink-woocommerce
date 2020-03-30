@@ -19,13 +19,16 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				return false;
 			}
 
-			add_action( 'woocommerce_product_options_downloads', array( $this, 'add_input_fields' ) );
+			add_action( 'woocommerce_product_options_downloads', array( $this, 'add_input_fields' ), 10, 0 );
+			add_action( 'woocommerce_variation_options_download', array( $this, 'add_input_fields' ), 10, 3 );
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
 
 			add_action( 'woocommerce_process_product_meta', array( $this, 'save_product' ) );
+			add_action( 'woocommerce_save_product_variation', array( $this, 'save_product_variation' ), 10, 2 );
 
 			add_action( 'woocommerce_process_product_meta_simple', array( $this, 'generate_product_files' ) );
+			add_action( 'woocommerce_save_product_variation', array( $this, 'generate_product_files' ) );
 
 			add_filter( 'woocommerce_downloadable_file_allowed_mime_types', array( $this, 'allow_ebook_mime_types' ) );
 
@@ -37,11 +40,13 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 		/**
 		 *
 		 */
-		public function add_input_fields() {
+		public function add_input_fields( $loop = null, $variation_data = null, $variation = null ) {
 			global $thepostid;
 
-			$li_lemoninkable  = get_post_meta( $thepostid, '_li_lemoninkable', true );
-			$li_master_id     = get_post_meta( $thepostid, '_li_master_id', true );
+			$post_id = $variation ? $variation->ID : $thepostid;
+
+			$li_lemoninkable  = get_post_meta( $post_id, '_li_lemoninkable', true );
+			$li_master_id     = get_post_meta( $post_id, '_li_master_id', true );
 
 			if ( $li_lemoninkable === '' ) {
 				$li_lemoninkable = 'yes';
@@ -49,7 +54,8 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			woocommerce_wp_checkbox(
 				array(
-					'id'          => '_li_lemoninkable',
+					'id'          => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable${loop}",
+					'name'        => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable[${loop}]",
 					'label'       => __( 'Watermark downloads using LemonInk', 'woocommerce_lemonink' ),
 					'type'        => 'checkbox',
 					'value'       => $li_lemoninkable,
@@ -61,7 +67,8 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			woocommerce_wp_text_input(
 				array(
-					'id'                => '_li_master_id',
+					'id'                => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id${loop}",
+					'name'              => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id[${loop}]",
 					'label'             => __( 'Master file ID', 'woocommerce_lemonink' ),
 					'desc_tip'          => 'true',
 					'description'       => __( 'You\'ll find the ID in "Your Files" section after logging in to LemonInk', 'woocommerce_lemonink' ),
@@ -91,20 +98,38 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 		public function save_product( $product_id ) {
 			$post = get_post( $product_id );
 
-			if ( 'product' === $post->post_type ) {
-				if ( isset( $_POST['_li_lemoninkable'] ) ) {
-					update_post_meta( $product_id, '_li_lemoninkable', 'yes' );
-				} else {
-					update_post_meta( $product_id, '_li_lemoninkable', 'no' );
-				}
+			if ( 'product' === $post->post_type || 'product_variation' === $post->post_type ) {
+				$params = array(
+					'_li_lemoninkable' => $_POST['_li_lemoninkable'],
+					'_li_master_id'    => $_POST['_li_master_id']
+				);
 
-				if ( isset ( $_POST['_li_master_id'] ) ) {
-					update_post_meta( $product_id, '_li_master_id', $_POST['_li_master_id'] );
-				}
+				$this->_save_product( $product_id, $params );
+			}
+		}
 
-				if ( get_post_meta( $product_id, '_li_lemoninkable', true ) == "yes" && !$this->validate_master_file_exists( false, $_POST['_li_master_id']) ) {
-					WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The master file with ID %s does not exist on the server.', 'woocommerce' ), '<code>' . $_POST['_li_master_id'] . '</code>' ) );
-				}
+		public function save_product_variation( $product_id, $i ) {
+			$params = array(
+				'_li_lemoninkable' => $_POST['variable_li_lemoninkable'][ $i ],
+				'_li_master_id'    => $_POST['variable_li_master_id'][ $i ]
+			);
+			
+			$this->_save_product( $product_id, $params );
+		}
+
+		private function _save_product( $product_id, $params ) {
+			if ( isset( $params['_li_lemoninkable'] ) ) {
+				update_post_meta( $product_id, '_li_lemoninkable', 'yes' );
+			} else {
+				update_post_meta( $product_id, '_li_lemoninkable', 'no' );
+			}
+
+			if ( isset ( $params['_li_master_id'] ) ) {
+				update_post_meta( $product_id, '_li_master_id', $params['_li_master_id'] );
+			}
+
+			if ( get_post_meta( $product_id, '_li_lemoninkable', true ) == "yes" && !$this->validate_master_file_exists( false, $params['_li_master_id']) ) {
+				WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The master file with ID %s does not exist on the server.', 'woocommerce' ), '<code>' . $params['_li_master_id'] . '</code>' ) );
 			}
 		}
 
