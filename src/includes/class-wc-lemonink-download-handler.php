@@ -4,6 +4,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function get_downloads( $product) {
+	if ( method_exists( $product, 'get_downloads' ) ){
+		return $product->get_downloads();
+	} else {
+		return $product->get_files();
+	}
+}
+
 if ( ! class_exists( 'WC_LemonInk_Download_Handler' ) ) :
 
 	class WC_LemonInk_Download_Handler {
@@ -31,7 +39,7 @@ if ( ! class_exists( 'WC_LemonInk_Download_Handler' ) ) :
 				$transaction->setToken(  get_post_meta( $order_id, $meta_prefix . 'transaction_token', true ) );
 
 				$product = wc_get_product( $product_id );
-				$files = $product->get_files();
+				$files = get_downloads( $product );
 
 				$format = strtolower($files[$download_id]['name']);
 				
@@ -46,7 +54,7 @@ if ( ! class_exists( 'WC_LemonInk_Download_Handler' ) ) :
 			}
 
 			$product = wc_get_product( $product_id );
-			$files = $product->get_files();
+			$files = get_downloads( $product );
 			
 			foreach ($files as $download_id => $file) {
 				if ( $this->is_lemoninkable_download( $download_id ) ) {
