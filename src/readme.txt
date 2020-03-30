@@ -2,8 +2,8 @@
 Contributors: lemonink
 Tags: lemonink, ecommerce, e-commerce, downloadable, downloads, ebooks, drm, watermark, watermarking, epub, mobi, pdf, Kindle, woocommerce
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 0.2.11
+Tested up to: 5.3.2
+Stable tag: 0.2.12
 License: MIT
 
 Enhances Downloadable products by enabling ebook watermarking using the LemonInk service.
