@@ -300,12 +300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
-                "reference": "0495856abe49c724625eb31443f7f354361af585"
+                "reference": "6980e004453c789c7b65e0637426936bca02efdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/0495856abe49c724625eb31443f7f354361af585",
-                "reference": "0495856abe49c724625eb31443f7f354361af585",
+                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/6980e004453c789c7b65e0637426936bca02efdc",
+                "reference": "6980e004453c789c7b65e0637426936bca02efdc",
                 "shasum": ""
             },
             "require": {
@@ -338,7 +338,7 @@
                 "api",
                 "watermarking"
             ],
-            "time": "2018-06-21T06:36:41+00:00"
+            "time": "2020-03-30T08:56:53+00:00"
         },
         {
             "name": "psr/http-message",
@@ -400,16 +400,14 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/woocommerce.zip?timestamp=1529516303",
-                "reference": null,
-                "shasum": null
+                "url": "https://downloads.wordpress.org/plugin/woocommerce.zip?timestamp=1584719920"
             },
             "require": {
                 "composer/installers": "~1.0"
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/woocommerce/",
-            "time": "2018-06-20T17:38:23+00:00"
+            "time": "2020-03-20T15:58:40+00:00"
         }
     ],
     "packages-dev": [],
@@ -421,5 +419,6 @@
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
