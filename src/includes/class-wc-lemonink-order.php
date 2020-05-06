@@ -30,7 +30,7 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 					
 				$transaction = new LemonInk\Models\Transaction();
 				$transaction->setMasterId( $master_id );
-				$transaction->setWatermarkValue( $download_data['user_email'] );
+				$transaction->setWatermarkValue( $this->watermark_value( $download_data['order_id'], $download_data['user_email'] ) );
 
 				$this->settings->get_api_client()->save($transaction);
 
@@ -41,6 +41,18 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 		private function is_lemoninkable_download( $download_id ) {
 				return substr( $download_id, 0, 4 ) === '_li_';
+		}
+
+		private function watermark_value( $order_id, $email ) {
+			// translators: first %s: order ID, second %s: order email
+			$value = __( 'Order #%s (%s)', 'lemonink' );
+			return sprintf( $value, $order_id, $this->obfuscate_email( $email ) );
+		}
+
+		private function obfuscate_email( $email ) {
+			$parts = explode( '@', $email );
+			$parts[0] = substr( $parts[0], 0, 1 ) . '***' . substr( $parts[0], -1, 1 );
+			return implode( '@', $parts );
 		}
 	}
 
