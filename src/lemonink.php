@@ -4,7 +4,7 @@
  * Plugin Name: LemonInk
  * Plugin URI: https://lemonink.co/
  * Description: Woocommerce plugin for watermarking ebooks using LemonInk
- * Version: 0.2.12
+ * Version: 0.3.0
  * Author: LemonInk
  * Author URI: https://lemonink.co/
  * Requires at least: 4.4
