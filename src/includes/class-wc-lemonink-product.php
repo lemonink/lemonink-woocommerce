@@ -56,7 +56,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				array(
 					'id'          => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable${loop}",
 					'name'        => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable[${loop}]",
-					'label'       => __( 'Watermark downloads using LemonInk', 'woocommerce_lemonink' ),
+					'label'       => __( 'Watermark downloads using LemonInk', 'lemonink' ),
 					'type'        => 'checkbox',
 					'value'       => $li_lemoninkable,
 					'default'     => '1'
@@ -69,9 +69,9 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				array(
 					'id'                => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id${loop}",
 					'name'              => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id[${loop}]",
-					'label'             => __( 'Master file ID', 'woocommerce_lemonink' ),
+					'label'             => __( 'Master file ID', 'lemonink' ),
 					'desc_tip'          => 'true',
-					'description'       => __( 'You\'ll find the ID in "Your Files" section after logging in to LemonInk', 'woocommerce_lemonink' ),
+					'description'       => __( 'You\'ll find the ID in "Your Files" section after logging in to LemonInk', 'lemonink' ),
 					'type'              => 'text',
 					'value'             => $li_master_id
 				)
@@ -129,7 +129,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			}
 
 			if ( get_post_meta( $product_id, '_li_lemoninkable', true ) == "yes" && !$this->validate_master_file_exists( false, $params['_li_master_id']) ) {
-				WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The master file with ID %s does not exist on the server.', 'woocommerce' ), '<code>' . $params['_li_master_id'] . '</code>' ) );
+				WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The master file with ID %s does not exist on the server.', 'lemonink' ), '<code>' . $params['_li_master_id'] . '</code>' ) );
 			}
 		}
 

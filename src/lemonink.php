@@ -10,8 +10,8 @@
  * Requires at least: 4.4
  * Tested up to: 5.3.2
  *
- * Text Domain: lemonink_woocommerce
- * Domain Path: /i18n/languages/
+ * Text Domain: lemonink
+ * Domain Path: /languages/
  *
  * @package LemonInk
  * @category Core
@@ -54,6 +54,8 @@ if ( ! class_exists( 'WC_LemonInk' ) ) :
 			} else {
 				// @todo: handle this?
 			}
+
+			load_plugin_textdomain( 'lemonink', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 			// Initialize the rest of the plugin
 			add_action( 'woocommerce_init', array( $this, 'load_classes' ) );

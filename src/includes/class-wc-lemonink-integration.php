@@ -11,13 +11,12 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 
 		public function __construct() {
 			$this->id           = 'lemonink';
-			$this->method_title = __( 'LemonInk Settings', 'lemonink_lemonink' );
+			$this->method_title = __( 'LemonInk Settings', 'lemonink' );
 
 			$this->get_settings();
 			$this->init_form_fields();
 
 			add_action( 'woocommerce_update_options_integration_' . $this->id, array( $this, 'process_admin_options' ) );
-
 		}
 
 		public function get_settings() {
@@ -26,9 +25,9 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 			$this->connected = !empty($this->api_key);
 
 			if ( $this->connected ) {
-				$this->method_description = __( 'Your store is now properly linked with LemonInk.', 'woocommerce_lemonink' );
+				$this->method_description = __( 'Your store is now properly linked with LemonInk.', 'lemonink' );
 			} else {
-				$this->method_description = __( 'Please enter your LemonInk API key. You can generate one in your <a href="https://lemonink.co/account/api-keys" target="_blank">account settings</a>.', 'woocommerce_lemonink' );
+				$this->method_description = __( 'Please enter your LemonInk API key. You can generate one in your <a href="https://lemonink.co/account/api-keys" target="_blank">account settings</a>.', 'lemonink' );
 			}
 		}
 
@@ -37,13 +36,13 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 
 			if ( $this->connected ) {
 				$this->form_fields['unlink'] = array(
-					'label'   => __( 'Unlink from LemonInk', 'woocommerce_lemonink' ),
+					'label'   => __( 'Unlink from LemonInk', 'lemonink' ),
 					'default' => '',
 					'type'    => 'checkbox'
 				);
 			} else {
 				$this->form_fields['api_key'] = array(
-					'title'             => __( 'API key', 'woocommerce_lemonink' ),
+					'title'             => __( 'API key', 'lemonink' ),
 					'type'              => 'string',
 					'default'           => '',
 					'custom_attributes' => array(
