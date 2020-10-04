@@ -15,28 +15,41 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 		public function __construct( WC_LemonInk_Integration $settings ) {
 			$this->settings = $settings;
 			
-			add_action( 'woocommerce_grant_product_download_access', array( $this, 'create_transaction' ), 10, 1);
+			add_action( 'woocommerce_grant_product_download_access', array( $this, 'create_transaction' ), 10, 1 );
+
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'update_order_meta' ), 10, 2 );
 
 			return true;
 		}
 		
 		public function create_transaction( $download_data ) {
 			$meta_prefix = "_li_product_{$download_data['product_id']}_";
-			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', yes );
+			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', 'yes' );
 
 			if ( !$transaction_exists && $this->is_lemoninkable_download( $download_data['download_id'] ) ) {
 				$product = wc_get_product( $download_data['product_id'] );
-				$master_id = get_post_meta( $product->get_id(), '_li_master_id', yes );
+				$master_id = get_post_meta( $product->get_id(), '_li_master_id', 'yes' );
+
+				$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
+				if ( !isset($watermark_value) ) {
+					$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
+				}
 					
 				$transaction = new LemonInk\Models\Transaction();
 				$transaction->setMasterId( $master_id );
-				$transaction->setWatermarkValue( $this->watermark_value( $download_data['order_id'], $download_data['user_email'] ) );
+				
+				$transaction->setWatermarkValue( $watermark_value );
 
 				$this->settings->get_api_client()->save($transaction);
 
 				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction->getId(), true );
 				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
 			}
+		}
+
+		public function update_order_meta( $order_id, $data )
+		{
+			add_post_meta( $order_id, '_li_watermark_value', $this->watermark_value( $order_id, $data['billing_email'] ) );
 		}
 
 		private function is_lemoninkable_download( $download_id ) {
