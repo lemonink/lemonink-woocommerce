@@ -300,12 +300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
-                "reference": "6980e004453c789c7b65e0637426936bca02efdc"
+                "reference": "bf158b1be3758b0879007e7e9fa9465e1c50c018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/6980e004453c789c7b65e0637426936bca02efdc",
-                "reference": "6980e004453c789c7b65e0637426936bca02efdc",
+                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/bf158b1be3758b0879007e7e9fa9465e1c50c018",
+                "reference": "bf158b1be3758b0879007e7e9fa9465e1c50c018",
                 "shasum": ""
             },
             "require": {
@@ -338,7 +338,7 @@
                 "api",
                 "watermarking"
             ],
-            "time": "2020-03-30T08:56:53+00:00"
+            "time": "2020-10-28T14:14:16+00:00"
         },
         {
             "name": "psr/http-message",

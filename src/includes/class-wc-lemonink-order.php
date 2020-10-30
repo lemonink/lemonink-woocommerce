@@ -30,15 +30,21 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 				$product = wc_get_product( $download_data['product_id'] );
 				$master_id = get_post_meta( $product->get_id(), '_li_master_id', 'yes' );
 
-				$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
-				if ( !isset($watermark_value) ) {
-					$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
-				}
-					
+				$user = $this->settings->get_api_client()->find( 'user', 'me' );
+
 				$transaction = new LemonInk\Models\Transaction();
 				$transaction->setMasterId( $master_id );
-				
-				$transaction->setWatermarkValue( $watermark_value );
+
+				if ( !empty( $user->getWatermarkParams() ) ) {
+					$order = new WC_Order( $download_data['order_id'] );
+					$transaction->setWatermarkParams( $this->watermark_params( $user->getWatermarkParams(), $order ) );
+				} else {
+					$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
+					if ( !isset($watermark_value) ) {
+						$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
+					}
+					$transaction->setWatermarkValue( $watermark_value );
+				}
 
 				$this->settings->get_api_client()->save($transaction);
 
@@ -56,6 +62,16 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 				return substr( $download_id, 0, 4 ) === '_li_';
 		}
 
+		private function watermark_params( $param_names, $download_data ) {
+			$params = array();
+
+			foreach ( $param_names as $param_name ) {
+				$params[$param_name] = $this->get_watermark_param( $param_name, $download_data );
+			}
+
+			return $params;
+		}
+
 		private function watermark_value( $order_id, $email ) {
 			// translators: first %s: order ID, second %s: order email
 			$value = __( 'Order #%s (%s)', 'lemonink' );
@@ -66,6 +82,19 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 			$parts = explode( '@', $email );
 			$parts[0] = substr( $parts[0], 0, 1 ) . '***' . substr( $parts[0], -1, 1 );
 			return implode( '@', $parts );
+		}
+
+		private function get_watermark_param( $param_name, $order ) {
+			switch ( $param_name ) {
+				case 'order_number':
+					return $order->get_id();
+				case 'obfuscated_customer_email':
+					return $this->obfuscate_email( $order->get_billing_email() );
+				case 'customer_email':
+					return $order->get_billing_email();
+				case 'customer_name':
+					return implode( " ", array( $order->get_billing_first_name(), $order->get_billing_last_name() ) );
+			}
 		}
 	}
 
