@@ -32,7 +32,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			add_filter( 'woocommerce_downloadable_file_allowed_mime_types', array( $this, 'allow_ebook_mime_types' ) );
 
-			add_filter( 'woocommerce_downloadable_file_exists', array( $this, 'validate_master_file_exists' ), 10, 2);
+			add_filter( 'woocommerce_downloadable_file_exists', array( $this, 'validate_master_file_is_present' ), 10, 2);
 
 			return true;
 		}
@@ -162,6 +162,16 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			);
 
 			return array_merge( $types, $ebook_types );
+		}
+
+		public function validate_master_file_is_present( $exists_on_disk, $file_url ) {
+			if ( !$exists_on_disk ) {
+				$master_id = preg_replace( '/\.([^.]+)$/', '', $file_url);
+				
+				return !!preg_match( '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $master_id );
+			} else {
+				return $exists_on_disk;
+			}
 		}
 
 		public function validate_master_file_exists( $exists_on_disk, $file_url ) {
