@@ -94,6 +94,10 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 					return $order->get_billing_email();
 				case 'customer_name':
 					return implode( " ", array( $order->get_billing_first_name(), $order->get_billing_last_name() ) );
+				case 'customer_first_name':
+					return $order->get_billing_first_name();
+				case 'customer_last_name':
+					return $order->get_billing_last_name();
 			}
 		}
 	}
