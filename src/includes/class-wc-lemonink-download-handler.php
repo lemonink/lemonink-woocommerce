@@ -34,10 +34,9 @@ if ( ! class_exists( 'WC_LemonInk_Download_Handler' ) ) :
 			if ( $this->is_lemoninkable_download( $download_id ) ) {
 				$meta_prefix = "_li_product_{$product_id}_";
 
-				$transaction = new LemonInk\Models\Transaction();
-				$transaction->setId( get_post_meta( $order_id, $meta_prefix . 'transaction_id', true ) );
-				$transaction->setToken(  get_post_meta( $order_id, $meta_prefix . 'transaction_token', true ) );
-
+				$transaction_id = get_post_meta( $order_id, $meta_prefix . 'transaction_id', true );
+				$transaction = $this->settings->get_api_client()->find( 'transaction', $transaction_id );
+				
 				$product = wc_get_product( $product_id );
 				$files = get_downloads( $product );
 

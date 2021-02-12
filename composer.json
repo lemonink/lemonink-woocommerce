@@ -25,7 +25,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.3",
-		"lemonink/lemonink-php": ">=0.1",
+		"lemonink/lemonink-php": "dev-master#e0c5680a888a86853449e80608bec12a211d3864",
 		"wpackagist-plugin/woocommerce": "*"
 	},
 	"autoload": {
