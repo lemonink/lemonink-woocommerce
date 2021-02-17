@@ -1,14 +1,9 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "50cd853a96e025d6e329b555339f8976",
     "packages": [
         {
             "name": "composer/installers",
             "version": "dev-main",
+            "version_normalized": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
@@ -35,6 +30,7 @@
                 "symfony/phpunit-bridge": "^4.2 || ^5",
                 "symfony/process": "^2.3"
             },
+            "time": "2021-02-02T15:00:11+00:00",
             "default-branch": true,
             "type": "composer-plugin",
             "extra": {
@@ -43,6 +39,7 @@
                     "dev-main": "1.x-dev"
                 }
             },
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Composer\\Installers\\": "src/Composer/Installers"
@@ -154,11 +151,12 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-02T15:00:11+00:00"
+            "install-path": "./installers"
         },
         {
             "name": "lemonink/lemonink-php",
             "version": "dev-master",
+            "version_normalized": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
@@ -173,8 +171,10 @@
             "require": {
                 "php": ">=5.3.3"
             },
+            "time": "2021-02-17T09:03:51+00:00",
             "default-branch": true,
             "type": "library",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "LemonInk\\": "lib/"
@@ -201,11 +201,12 @@
                 "issues": "https://github.com/lemonink/lemonink-php/issues",
                 "source": "https://github.com/lemonink/lemonink-php/tree/v1.0.0"
             },
-            "time": "2021-02-17T09:03:51+00:00"
+            "install-path": "../lemonink/lemonink-php"
         },
         {
             "name": "wpackagist-plugin/woocommerce",
             "version": "5.1.0-beta.1",
+            "version_normalized": "5.1.0.0-beta1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/woocommerce/",
@@ -219,18 +220,11 @@
                 "composer/installers": "~1.0"
             },
             "type": "wordpress-plugin",
-            "homepage": "https://wordpress.org/plugins/woocommerce/"
+            "installation-source": "dist",
+            "homepage": "https://wordpress.org/plugins/woocommerce/",
+            "install-path": "../../wp-content/plugins/woocommerce"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": [],
-    "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": {
-        "php": ">=5.3.3"
-    },
-    "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "dev": true,
+    "dev-package-names": []
 }

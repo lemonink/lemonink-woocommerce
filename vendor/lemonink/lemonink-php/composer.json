@@ -1,0 +1,24 @@
+{
+  "name": "lemonink/lemonink-php",
+  "version": "1.0.0",
+  "description": "Official PHP client for LemonInk API",
+  "keywords": [
+    "LemonInk",
+    "watermarking",
+    "api"
+  ],
+  "homepage": "https://lemonink.co/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "LemonInk",
+      "homepage": "https://lemonink.co/"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3"
+  },
+  "autoload": {
+    "psr-4": { "LemonInk\\" : "lib/" }
+  }
+}
