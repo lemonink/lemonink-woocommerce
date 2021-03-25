@@ -37,7 +37,7 @@ msgid "Your store is now properly linked with LemonInk."
 msgstr ""
 
 #: includes/class-wc-lemonink-integration.php:30
-msgid "Please enter your LemonInk API key. You can generate one in your <a href=\"https://lemonink.co/account/api-keys\" target=\"_blank\">account settings</a>."
+msgid "Please enter your LemonInk API key. You can generate one in your <a href=\"https://lemonink.co/settings/api-keys\" target=\"_blank\">account settings</a>."
 msgstr ""
 
 #: includes/class-wc-lemonink-integration.php:39

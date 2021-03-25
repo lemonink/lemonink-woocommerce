@@ -46,11 +46,11 @@ msgstr "Twój sklep został poprawnie połączony z LemonInkiem"
 #: includes/class-wc-lemonink-integration.php:30 loco:5eb275fced0cfa4c4f432fe6
 msgid ""
 "Please enter your LemonInk API key. You can generate one in your <a "
-"href=\"https://lemonink.co/account/api-keys\" target=\"_blank\">account "
+"href=\"https://lemonink.co/settings/api-keys\" target=\"_blank\">account "
 "settings</a>."
 msgstr ""
 "Wpisz swój klucz API LemonInk. Możesz wygnerować klucz w <a href=\"https:"
-"//lemonink.co/account/api-keys\" target=\"_blank\">ustawieniach konta</a>."
+"//lemonink.co/settings/api-keys\" target=\"_blank\">ustawieniach konta</a>."
 
 #: includes/class-wc-lemonink-integration.php:39 loco:5eb275fced0cfa4c4f432fe7
 msgid "Unlink from LemonInk"

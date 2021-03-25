@@ -27,7 +27,7 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 			if ( $this->connected ) {
 				$this->method_description = __( 'Your store is now properly linked with LemonInk.', 'lemonink' );
 			} else {
-				$this->method_description = __( 'Please enter your LemonInk API key. You can generate one in your <a href="https://lemonink.co/account/api-keys" target="_blank">account settings</a>.', 'lemonink' );
+				$this->method_description = __( 'Please enter your LemonInk API key. You can generate one in your <a href="https://lemonink.co/settings/api-keys" target="_blank">account settings</a>.', 'lemonink' );
 			}
 		}
 

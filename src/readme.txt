@@ -26,7 +26,7 @@ For more information go to [LemonInk](https://www.lemonink.co) or drop us a line
 
 1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress
-1. Go to [API keys section at lemonink.co](https://www.lemonink.co/account/api-keys) and generate a new API key. Copy the token.
+1. Go to [API keys section at lemonink.co](https://www.lemonink.co/settings/api-keys) and generate a new API key. Copy the token.
 1. Go to WooCommerce->Settings->Integration->LemonInk screen, paste the copied token and save.
 1. Add a master file at [lemonink.co](https://www.lemonink.co/masters) and copy it's ID.
 1. Edit the product you wish to watermark using LemonInk, mark it as Downloadable, make sure that "Watermark downloads using LemonInk" checkbox is checked and paste the ID into the "Master file ID field". Save.
