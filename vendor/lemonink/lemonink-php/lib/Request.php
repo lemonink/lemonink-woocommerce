@@ -19,6 +19,7 @@ class Request
   {
     $curlHandle = curl_init();
 
+    curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($curlHandle, CURLOPT_URL, $this->url);
     curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, TRUE);
     
