@@ -84,12 +84,18 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 			return implode( '@', $parts );
 		}
 
+		private function obfuscate_name( $first_name, $last_name ) {
+			return $first_name . " " . $last_name[0] . ".";
+		}
+
 		private function get_watermark_param( $param_name, $order ) {
 			switch ( $param_name ) {
 				case 'order_number':
 					return $order->get_id();
 				case 'obfuscated_customer_email':
 					return $this->obfuscate_email( $order->get_billing_email() );
+				case 'obfuscated_customer_name':
+					return $this->obfuscate_name( $order->get_billing_first_name(), $order->get_billing_last_name() );
 				case 'customer_email':
 					return $order->get_billing_email();
 				case 'customer_name':
