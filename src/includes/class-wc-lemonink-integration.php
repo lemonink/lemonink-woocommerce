@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 
 	class WC_LemonInk_Integration extends WC_Integration {
-		public $api_key;
+		private $_api_key;
 
 		public function __construct() {
 			$this->id           = 'lemonink';
@@ -20,9 +20,9 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 		}
 
 		public function get_settings() {
-			$this->api_key = $this->get_option( 'api_key' );
+			$api_key = $this->get_api_key();
 
-			$this->connected = !empty($this->api_key);
+			$this->connected = !empty($api_key);
 
 			if ( $this->connected ) {
 				$this->method_description = __( 'Your store is now properly linked with LemonInk.', 'lemonink' );
@@ -71,7 +71,14 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 		}
 
 		public function get_api_client() {
-			return new LemonInk\Client( $this->api_key );
+			return new LemonInk\Client( $this->get_api_key() );
+		}
+
+		private function get_api_key() {
+			if ( is_null( $this->_api_key ) ) {
+				$this->_api_key = $this->get_option( 'api_key' );
+			}
+			return $this->_api_key;
 		}
 	}
 
