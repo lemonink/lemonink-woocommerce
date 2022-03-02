@@ -101,7 +101,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			if ( 'product' === $post->post_type || 'product_variation' === $post->post_type ) {
 				$params = array(
 					'_li_lemoninkable' => $_POST['_li_lemoninkable'],
-					'_li_master_id'    => $_POST['_li_master_id']
+					'_li_master_id'    => trim( $_POST['_li_master_id'] )
 				);
 
 				$this->_save_product( $product_id, $params );
@@ -111,7 +111,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 		public function save_product_variation( $product_id, $i ) {
 			$params = array(
 				'_li_lemoninkable' => $_POST['variable_li_lemoninkable'][ $i ],
-				'_li_master_id'    => $_POST['variable_li_master_id'][ $i ]
+				'_li_master_id'    => trim( $_POST['variable_li_master_id'][ $i ] )
 			);
 			
 			$this->_save_product( $product_id, $params );
