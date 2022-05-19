@@ -151,17 +151,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
-                "reference": "81464410bbd07b3ddef7b50b5dac053f8042e4e6"
+                "reference": "05c80412d86d61efce1c202ea814f7929caaa714"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/9c47f9ee36524000fe3fde292278c30f95cb08e9",
-                "reference": "81464410bbd07b3ddef7b50b5dac053f8042e4e6",
+                "url": "https://api.github.com/repos/lemonink/lemonink-php/zipball/05c80412d86d61efce1c202ea814f7929caaa714",
+                "reference": "05c80412d86d61efce1c202ea814f7929caaa714",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -185,7 +186,11 @@
                 "api",
                 "watermarking"
             ],
-            "time": "2021-02-17T09:03:51+00:00"
+            "support": {
+                "issues": "https://github.com/lemonink/lemonink-php/issues",
+                "source": "https://github.com/lemonink/lemonink-php/tree/v1.0.2"
+            },
+            "time": "2022-05-19T09:45:00+00:00"
         },
         {
             "name": "wpackagist-plugin/woocommerce",
@@ -217,5 +222,5 @@
         "php": ">=5.3.3"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.2.0"
 }

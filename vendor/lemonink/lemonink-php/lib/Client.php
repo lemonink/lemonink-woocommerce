@@ -109,7 +109,11 @@ class Client
       camelcase2underscore($modelName) => $output
     ];
 
-    return json_encode($output);
+    if (defined('JSON_INVALID_UTF8_IGNORE')) {
+      return json_encode($output, JSON_INVALID_UTF8_IGNORE);
+    } else {
+      return json_encode($output);
+    }
   }
 
   protected function deserialize($modelName, $data)

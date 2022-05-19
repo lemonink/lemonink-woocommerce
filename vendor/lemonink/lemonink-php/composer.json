@@ -1,6 +1,6 @@
 {
   "name": "lemonink/lemonink-php",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Official PHP client for LemonInk API",
   "keywords": [
     "LemonInk",
