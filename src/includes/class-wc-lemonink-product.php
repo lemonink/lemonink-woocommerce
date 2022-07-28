@@ -49,7 +49,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			$li_master_id     = get_post_meta( $post_id, '_li_master_id', true );
 
 			if ( $li_lemoninkable === '' ) {
-				$li_lemoninkable = 'yes';
+				$li_lemoninkable = 'no';
 			}
 
 			woocommerce_wp_checkbox(
