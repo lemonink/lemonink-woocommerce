@@ -28,28 +28,32 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 			if ( !$transaction_exists && $this->is_lemoninkable_download( $download_data['download_id'] ) ) {
 				$product = wc_get_product( $download_data['product_id'] );
-				$master_id = get_post_meta( $product->get_id(), '_li_master_id', 'yes' );
+				$is_lemoninkable = get_post_meta( $product->get_id(), '_li_lemoninkable', true ) == "yes";
 
-				$user = $this->settings->get_api_client()->find( 'user', 'me' );
+				if ( $is_lemoninkable ) {
+					$master_id = get_post_meta( $product->get_id(), '_li_master_id', 'yes' );
 
-				$transaction = new LemonInk\Models\Transaction();
-				$transaction->setMasterId( $master_id );
+					$user = $this->settings->get_api_client()->find( 'user', 'me' );
 
-				if ( !empty( $user->getWatermarkParams() ) ) {
-					$order = new WC_Order( $download_data['order_id'] );
-					$transaction->setWatermarkParams( $this->watermark_params( $user->getWatermarkParams(), $order ) );
-				} else {
-					$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
-					if ( !isset($watermark_value) ) {
-						$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
+					$transaction = new LemonInk\Models\Transaction();
+					$transaction->setMasterId( $master_id );
+
+					if ( !empty( $user->getWatermarkParams() ) ) {
+						$order = new WC_Order( $download_data['order_id'] );
+						$transaction->setWatermarkParams( $this->watermark_params( $user->getWatermarkParams(), $order ) );
+					} else {
+						$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
+						if ( !isset($watermark_value) ) {
+							$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
+						}
+						$transaction->setWatermarkValue( $watermark_value );
 					}
-					$transaction->setWatermarkValue( $watermark_value );
+
+					$this->settings->get_api_client()->save($transaction);
+
+					add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction->getId(), true );
+					add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
 				}
-
-				$this->settings->get_api_client()->save($transaction);
-
-				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction->getId(), true );
-				add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
 			}
 		}
 
