@@ -25,9 +25,32 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 		public function create_transaction( $download_data ) {
 			$meta_prefix = "_li_product_{$download_data['product_id']}_";
 			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', 'yes' );
+			
+			$product = wc_get_product( $download_data['product_id'] );
+			if ( !$product ) {
+				return;
+			}
+
+			// When a products is split into variations, WooCommerce regenerates download grants;
+			// in such a situation LemonInk needs to rewrite transaction data from the parent product to the variant
+			// to avoid rewatermarking the same files.
+			if ( !$transaction_exists ) {
+				$parent_id = $product->get_parent_id();
+
+				if ( $parent_id ) {
+					$parent_meta_prefix = "_li_product_{$parent_id}_";
+					$transaction_id = get_post_meta( $download_data['order_id'], $parent_meta_prefix . 'transaction_id', 'yes' );
+					$transaction_token = get_post_meta( $download_data['order_id'], $parent_meta_prefix . 'transaction_token', 'yes' );
+
+					if ( $transaction_id ) {
+						add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction_id, true );
+						add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction_token, true );
+						$transaction_exists = true;
+					}
+				}
+			}
 
 			if ( !$transaction_exists && $this->is_lemoninkable_download( $download_data['download_id'] ) ) {
-				$product = wc_get_product( $download_data['product_id'] );
 				$is_lemoninkable = get_post_meta( $product->get_id(), '_li_lemoninkable', true ) == "yes";
 
 				if ( $is_lemoninkable ) {
