@@ -29,10 +29,15 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.3",
-		"lemonink/lemonink-php": ">=1.0.0",
+		"lemonink/lemonink-php": ">=1.1.0",
 		"wpackagist-plugin/woocommerce": "*"
 	},
 	"autoload": {
 		"psr-0": { "LemonInk\\" : "src/" }
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true
+		}
 	}
 }

@@ -77,6 +77,6 @@ class Transaction extends Base
 
   public function getUrl($format = null)
   {
-    return join(".", [$this->getDownloadUrl(), $format]);
+    return $this->getDownloadUrl() . "?f=" . $format;
   }
 };
