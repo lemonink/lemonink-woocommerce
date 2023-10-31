@@ -118,7 +118,7 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 		private function get_watermark_param( $param_name, $order ) {
 			switch ( $param_name ) {
 				case 'order_number':
-					return $order->get_id();
+					return $order->get_order_number();
 				case 'obfuscated_customer_email':
 					return $this->obfuscate_email( $order->get_billing_email() );
 				case 'obfuscated_customer_name':
