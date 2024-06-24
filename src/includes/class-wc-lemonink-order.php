@@ -31,7 +31,7 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 				return;
 			}
 
-			// When a products is split into variations, WooCommerce regenerates download grants;
+			// When a product is split into variations, WooCommerce regenerates download grants;
 			// in such a situation LemonInk needs to rewrite transaction data from the parent product to the variant
 			// to avoid rewatermarking the same files.
 			if ( !$transaction_exists ) {

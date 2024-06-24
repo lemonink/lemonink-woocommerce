@@ -3,7 +3,7 @@ Contributors: lemonink
 Tags: lemonink, ecommerce, e-commerce, downloadable, downloads, ebooks, drm, watermark, watermarking, epub, mobi, pdf, Kindle, woocommerce
 Requires at least: 4.4
 Tested up to: 6.3
-Stable tag: 0.7.0
+Stable tag: 0.7.1
 License: MIT
 
 Watermark EPUB, MOBI and PDF files in your WooCommerce store using the LemonInk service.

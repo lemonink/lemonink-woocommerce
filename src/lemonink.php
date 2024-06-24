@@ -4,11 +4,11 @@
  * Plugin Name: LemonInk Ebook Watermarking for WooCommerce
  * Plugin URI: https://www.lemonink.co/
  * Description: Watermark EPUB, MOBI and PDF files in your WooCommerce store using the LemonInk service.
- * Version: 0.7.0
+ * Version: 0.7.1
  * Author: LemonInk
  * Author URI: https://www.lemonink.co/
  * Requires at least: 4.4
- * Tested up to: 6.3
+ * Tested up to: 6.5
  *
  * Text Domain: lemonink
  * Domain Path: /languages/

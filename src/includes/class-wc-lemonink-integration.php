@@ -8,6 +8,7 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 
 	class WC_LemonInk_Integration extends WC_Integration {
 		private $_api_key;
+		public $connected = false;
 
 		public function __construct() {
 			$this->id           = 'lemonink';
