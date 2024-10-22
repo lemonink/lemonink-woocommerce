@@ -14,18 +14,18 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 		public function __construct( WC_LemonInk_Integration $settings ) {
 			$this->settings = $settings;
-			
+
 			add_action( 'woocommerce_grant_product_download_access', array( $this, 'create_transaction' ), 10, 1 );
 
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'update_order_meta' ), 10, 2 );
 
 			return true;
 		}
-		
+
 		public function create_transaction( $download_data ) {
 			$meta_prefix = "_li_product_{$download_data['product_id']}_";
 			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', 'yes' );
-			
+
 			$product = wc_get_product( $download_data['product_id'] );
 			if ( !$product ) {
 				return;
@@ -131,6 +131,8 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 					return $order->get_billing_first_name();
 				case 'customer_last_name':
 					return $order->get_billing_last_name();
+				case 'company_name':
+					return $order->get_billing_company();
 			}
 		}
 	}
