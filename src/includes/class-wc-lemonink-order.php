@@ -24,7 +24,8 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 		public function create_transaction( $download_data ) {
 			$meta_prefix = "_li_product_{$download_data['product_id']}_";
-			$transaction_exists = get_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', 'yes' );
+			$transaction_data = WC_LemonInk_Order_Metadata::get_transaction_data( $download_data['order_id'], $meta_prefix );
+			$transaction_exists = !!$transaction_data;
 
 			$product = wc_get_product( $download_data['product_id'] );
 			if ( !$product ) {
@@ -39,12 +40,15 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 				if ( $parent_id ) {
 					$parent_meta_prefix = "_li_product_{$parent_id}_";
-					$transaction_id = get_post_meta( $download_data['order_id'], $parent_meta_prefix . 'transaction_id', 'yes' );
-					$transaction_token = get_post_meta( $download_data['order_id'], $parent_meta_prefix . 'transaction_token', 'yes' );
+					$parent_transaction_data = WC_LemonInk_Order_Metadata::get_transaction_data( $download_data['order_id'], $parent_meta_prefix );
 
-					if ( $transaction_id ) {
-						add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction_id, true );
-						add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction_token, true );
+					if ( $parent_transaction_data ) {
+						WC_LemonInk_Order_Metadata::set_transaction_data(
+							$download_data['order_id'],
+							$meta_prefix,
+							$parent_transaction_data['id'],
+							$parent_transaction_data['token']
+						);
 						$transaction_exists = true;
 					}
 				}
@@ -65,7 +69,7 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 						$order = new WC_Order( $download_data['order_id'] );
 						$transaction->setWatermarkParams( $this->watermark_params( $user->getWatermarkParams(), $order ) );
 					} else {
-						$watermark_value = get_post_meta( $download_data['order_id'], '_li_watermark_value', 'yes' );
+						$watermark_value = WC_LemonInk_Order_Metadata::get_watermark_value( $download_data['order_id'] );
 						if ( !isset($watermark_value) ) {
 							$watermark_value = $this->watermark_value( $download_data['order_id'], $download_data['user_email'] );
 						}
@@ -74,8 +78,12 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 					$this->settings->get_api_client()->save($transaction);
 
-					add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_id', $transaction->getId(), true );
-					add_post_meta( $download_data['order_id'], $meta_prefix . 'transaction_token', $transaction->getToken(), true );
+					WC_LemonInk_Order_Metadata::set_transaction_data(
+						$download_data['order_id'],
+						$meta_prefix,
+						$transaction->getId(),
+						$transaction->getToken()
+					);
 				}
 			}
 		}

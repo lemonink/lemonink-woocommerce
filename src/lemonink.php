@@ -78,6 +78,7 @@ if ( ! class_exists( 'WC_LemonInk' ) ) :
 			$this->settings = $integrations['lemonink'];
 
 			include_once plugin_dir_path( __FILE__ ) . "vendor/autoload.php";
+			require_once( dirname( __FILE__ ) . '/includes/class-wc-lemonink-order-metadata.php' );
 
 			include_once plugin_dir_path( __FILE__ ) . 'includes/class-wc-lemonink-product.php';
 			new WC_LemonInk_Product( $this->settings );

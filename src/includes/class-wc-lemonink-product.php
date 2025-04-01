@@ -94,7 +94,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			);
 
 		}
-		
+
 		public function save_product( $product_id ) {
 			$post = get_post( $product_id );
 
@@ -113,7 +113,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				'_li_lemoninkable' => $_POST['variable_li_lemoninkable'][ $i ],
 				'_li_master_id'    => trim( $_POST['variable_li_master_id'][ $i ] )
 			);
-			
+
 			$this->_save_product( $product_id, $params );
 		}
 
@@ -139,7 +139,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 				$master = $this->settings->get_api_client()->find( 'master', $master_id );
 
 				$files = array();
-				
+
 				if ( $master ) {
 					foreach ( $master->getFormats() as $format ) {
 						$file = $master_id . '.' . $format;
@@ -167,7 +167,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 		public function validate_master_file_is_present( $exists_on_disk, $file_url ) {
 			if ( !$exists_on_disk ) {
 				$master_id = preg_replace( '/\.([^.]+)$/', '', $file_url);
-				
+
 				return !!preg_match( '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $master_id );
 			} else {
 				return $exists_on_disk;
@@ -177,7 +177,7 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 		public function validate_master_file_exists( $exists_on_disk, $file_url ) {
 			if ( !$exists_on_disk ) {
 				$master_id = preg_replace( '/\.([^.]+)$/', '', $file_url);
-				
+
 				$master = $this->settings->get_api_client()->find( 'master', $master_id );
 
 				return !!$master;

@@ -65,17 +65,17 @@ if ( ! class_exists( 'WC_LemonInk_Integration' ) ) :
 				$this->settings['unlink'] = 'no';
 			} else {
 				$this->settings['api_key'] = $this->get_field_value( 'api_key', $fields['api_key'], $post_data );
-			}		
-		
+			}
+
 			$option_key = $this->get_option_key();
 			do_action( 'woocommerce_update_option', array( 'id' => $option_key ) );
 			$result = update_option( $option_key, apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $this->settings ), 'yes' );
-	
+
 			// Fetch API key from settings and reload form fields to reflect changes
 			$this->forget_api_key();
 			$this->get_settings();
 			$this->init_form_fields();
-	
+
 			return $result;
 		}
 
