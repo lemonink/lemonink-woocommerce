@@ -68,8 +68,8 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			woocommerce_wp_checkbox(
 				array(
-					'id'          => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable${loop}",
-					'name'        => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable[${loop}]",
+					'id'          => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable{$loop}",
+					'name'        => is_null( $loop ) ? '_li_lemoninkable' : "variable_li_lemoninkable[{$loop}]",
 					'label'       => __( 'Watermark downloads using LemonInk', 'lemonink' ),
 					'type'        => 'checkbox',
 					'value'       => $li_lemoninkable,
@@ -81,8 +81,8 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 
 			woocommerce_wp_text_input(
 				array(
-					'id'                => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id${loop}",
-					'name'              => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id[${loop}]",
+					'id'                => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id{$loop}",
+					'name'              => is_null( $loop ) ? '_li_master_id' : "variable_li_master_id[{$loop}]",
 					'label'             => __( 'Master file ID', 'lemonink' ),
 					'desc_tip'          => 'true',
 					'description'       => __( 'You\'ll find the ID in "Your Files" section after logging in to LemonInk', 'lemonink' ),
