@@ -33,8 +33,22 @@ if ( ! class_exists( 'WC_LemonInk_Product' ) ) :
 			add_filter( 'woocommerce_downloadable_file_allowed_mime_types', array( $this, 'allow_ebook_mime_types' ) );
 
 			add_filter( 'woocommerce_downloadable_file_exists', array( $this, 'validate_master_file_is_present' ), 10, 2);
+			add_filter( 'woocommerce_product_get_downloads', array( $this, 'fix_download_enabled' ), 10, 2 );
 
 			return true;
+		}
+
+		/**
+		 * WooCommerce's approved directories mechanism doesn't play nice with our download file names
+		 * and automatically disables them. This function reenables downloads for LemonInk-managed files.
+		 */
+		public function fix_download_enabled($value, $product) {
+			foreach ( $value as $download) {
+				if ( str_starts_with($download->get_id(), "_li_" )) {
+					$download->set_enabled( true );
+				}
+			}
+			return $value;
 		}
 
 		/**
