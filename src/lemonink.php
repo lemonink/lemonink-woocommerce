@@ -29,15 +29,7 @@ if ( ! class_exists( 'WC_LemonInk' ) ) :
 		private $settings = null;
 
 		public function __construct() {
-			// Test to see if WooCommerce is active (including network activated).
-			$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
-
-			if (
-				in_array( $plugin_path, wp_get_active_and_valid_plugins() )
-				|| in_array( $plugin_path, wp_get_active_network_plugins() )
-			) {
-				add_action( 'plugins_loaded', array( $this, 'init' ) );
-			}
+			add_action( 'plugins_loaded', array( $this, 'init' ) );
 		}
 
 		public static function get_instance() {
