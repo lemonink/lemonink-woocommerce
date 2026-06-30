@@ -1,6 +1,6 @@
 {
 	"name": "lemonink-woocommerce",
-	"version": "0.8.4",
+	"version": "0.8.5",
 	"private": true,
 	"description": "Dev/test tooling for the LemonInk WooCommerce plugin",
 	"license": "MIT",
