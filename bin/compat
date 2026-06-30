@@ -11,7 +11,10 @@ cd "$(dirname "$0")/.."
 #
 # Edit the matrix below to suit. "latest" means the newest available version.
 
-WP_VERSIONS=("latest" "6.7")
+# Note: WooCommerce declares a minimum WordPress version (currently 6.9) and
+# wp-cli refuses to install it on anything older — even when pinning an old WC
+# version — so WP entries must be >= WooCommerce's current floor.
+WP_VERSIONS=("latest" "6.9")
 WC_VERSIONS=("latest" "9.0.0")
 
 # ---------------------------------------------------------------------------
@@ -52,21 +55,39 @@ for WP in "${WP_VERSIONS[@]}"; do
 		echo " WordPress $WP  +  WooCommerce $WC"
 		echo "------------------------------------------------------------"
 
+		# Install + activate WooCommerce, capturing output so an install failure
+		# (e.g. WC requires a newer WordPress) is visible rather than hidden.
 		if [ "$WC" = "latest" ]; then
-			wp plugin install woocommerce --force --activate >/dev/null
+			wc_install=$(npx wp-env run cli wp plugin install woocommerce --force --activate 2>&1)
 		else
-			wp plugin install woocommerce --version="$WC" --force --activate >/dev/null
+			wc_install=$(npx wp-env run cli wp plugin install woocommerce --version="$WC" --force --activate 2>&1)
 		fi
-		wp plugin activate lemonink >/dev/null
+		wp plugin activate lemonink >/dev/null 2>&1 || true
+
+		# Guard: if WooCommerce did not load (failed to install, or refuses to
+		# bootstrap on this WP core) the smoke check would fatal with "undefined
+		# function WC()". Detect that up front and report it as a failure with
+		# the install output, rather than a confusing fatal.
+		wc_loaded=$(npx wp-env run cli wp eval 'echo function_exists("WC") ? "yes" : "no";' 2>/dev/null | clean | tr -d '[:space:]')
+		if [ "$wc_loaded" != "yes" ]; then
+			echo "  !! WooCommerce is not loaded on WordPress $WP — smoke skipped:"
+			echo "$wc_install" | clean | grep -iE "Warning|Error" | sed 's/^/     /'
+			results+=("WP $WP | WC $WC | WC-NOT-LOADED")
+			continue
+		fi
 
 		# Reset the log and store the API key for this run.
 		npx wp-env run cli sh -c ": > $DEBUG_LOG" >/dev/null 2>&1 || true
 		wp option update woocommerce_lemonink_settings --format=json \
 			"{\"api_key\":\"$LEMONINK_API_KEY\"}" >/dev/null
 
-		# Run smoke checks (non-zero exit on assertion failure).
+		# Run smoke checks, capturing the REAL exit code (a pipe into the noise
+		# filter would mask it with grep's exit code) and the output.
+		smoke_out=$(npx wp-env run cli wp eval-file wp-content/lemonink-dev/smoke.php "$LEMONINK_MASTER_ID" 2>&1)
+		smoke_rc=$?
+		echo "$smoke_out" | clean
 		smoke_status="PASS"
-		if ! npx wp-env run cli wp eval-file wp-content/lemonink-dev/smoke.php "$LEMONINK_MASTER_ID" 2>&1 | clean; then
+		if [ "$smoke_rc" -ne 0 ] || echo "$smoke_out" | grep -qiE "Fatal error|critical error"; then
 			smoke_status="SMOKE-FAIL"
 		fi
 
