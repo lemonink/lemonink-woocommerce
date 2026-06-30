@@ -13,6 +13,7 @@
 		"logs": "bin/logs",
 		"compat": "bin/compat",
 		"tested-up-to": "bin/tested-up-to",
+		"bump-version": "bin/bump-version",
 		"e2e": "playwright test",
 		"e2e:ui": "playwright test --ui"
 	},
