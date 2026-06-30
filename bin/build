@@ -5,12 +5,19 @@ set -e
 # The plugin ships with its Composer dependencies bundled under src/vendor,
 # so `src/` is a self-contained plugin directory.
 
-composer install --no-dev --no-interaction --optimize-autoloader
+# --prefer-dist installs packages from release archives rather than git clones,
+# so dependencies don't carry their own .git directories into the build.
+composer install --no-dev --no-interaction --optimize-autoloader --prefer-dist
 
 rm -rf tmp/lemonink tmp/lemonink.zip
 mkdir -p tmp/lemonink
 cp -r src/. tmp/lemonink/
 cp LICENSE tmp/lemonink/
+
+# Belt and suspenders: strip any VCS metadata that a source install may have
+# left behind. These must never ship to WordPress.org (and must never be added
+# to the plugin SVN repo).
+find tmp/lemonink -depth \( -name '.git*' -o -name .svn -o -name .hg \) -exec rm -rf {} +
 
 (cd tmp && zip -r -q -X lemonink.zip lemonink)
 echo "Built tmp/lemonink.zip"
