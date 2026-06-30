@@ -1,16 +1,6 @@
 {
 	"name": "lemonink/lemonink-woocommerce",
 	"description": "Woocommerce plugin for watermarking ebooks using LemonInk",
-	"repositories":[
-		{
-			"type": "composer",
-			"url": "https://wpackagist.org"
-		},
-		{
-			"type": "composer",
-			"url": "https://packagist.org"
-		}
-	],
 	"keywords": [
 		"LemonInk",
 		"woocommerce-plugin",
@@ -27,17 +17,15 @@
 		}
 	],
 	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"require": {
 		"php": ">=5.3.3",
-		"lemonink/lemonink-php": ">=1.1.0",
-		"wpackagist-plugin/woocommerce": "*"
+		"lemonink/lemonink-php": ">=1.1.0"
 	},
 	"autoload": {
 		"psr-0": { "LemonInk\\" : "src/" }
 	},
 	"config": {
-		"allow-plugins": {
-			"composer/installers": true
-		}
+		"vendor-dir": "src/vendor"
 	}
 }

@@ -1,14 +1,9 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "ccb4d3eca0197bcee14fb7155fd59278",
     "packages": [
         {
             "name": "lemonink/lemonink-php",
             "version": "1.1.0",
+            "version_normalized": "1.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lemonink/lemonink-php.git",
@@ -23,7 +18,9 @@
             "require": {
                 "php": ">=5.3.3"
             },
+            "time": "2023-02-16T07:24:10+00:00",
             "type": "library",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "LemonInk\\": "lib/"
@@ -50,18 +47,9 @@
                 "issues": "https://github.com/lemonink/lemonink-php/issues",
                 "source": "https://github.com/lemonink/lemonink-php/tree/v1.1.0"
             },
-            "time": "2023-02-16T07:24:10+00:00"
+            "install-path": "../lemonink/lemonink-php"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": [],
-    "prefer-stable": true,
-    "prefer-lowest": false,
-    "platform": {
-        "php": ">=5.3.3"
-    },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "dev": false,
+    "dev-package-names": []
 }

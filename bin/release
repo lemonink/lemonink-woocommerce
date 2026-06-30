@@ -1,12 +1,26 @@
 #!/bin/bash
+set -e
 
-VERSION=$1
+# Publish a release to the WordPress.org plugin SVN repository.
+# Usage: SVN_USERNAME=... SVN_PASSWORD=... bin/release <version>
+# Credentials are read from the environment (e.g. an untracked .env) and must
+# never be committed.
+
+VERSION="$1"
+: "${VERSION:?Usage: bin/release <version>}"
+: "${SVN_USERNAME:?Set SVN_USERNAME in your environment}"
+: "${SVN_PASSWORD:?Set SVN_PASSWORD in your environment}"
+
 bin/build
-svn checkout https://plugins.svn.wordpress.org/lemonink/ svn
-mv dist/assets/* svn/assets/
-cp -r dist/* svn/trunk/
+
+svn checkout "https://plugins.svn.wordpress.org/lemonink/" svn \
+  --username="$SVN_USERNAME" --password="$SVN_PASSWORD"
+
+mv tmp/lemonink/assets/* svn/assets/ 2>/dev/null || true
+cp -r tmp/lemonink/* svn/trunk/
+
 cd svn
-svn cp trunk tags/$VERSION
-svn add *
-svn commit -m "Tagging version $VERSION"
-rm -rf dist
+svn cp trunk "tags/$VERSION"
+svn add --force .
+svn commit -m "Tagging version $VERSION" \
+  --username="$SVN_USERNAME" --password="$SVN_PASSWORD"

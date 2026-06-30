@@ -1,9 +1,16 @@
 #!/bin/bash
+set -e
 
-composer install
-mkdir dist
-cp -r src/* dist/
-cp LICENSE dist/
-#mv dist/ lemonink
-#zip -r -X tmp/lemonink.zip lemonink
-#mv lemonink dist
+# Build the distributable plugin into tmp/lemonink/ and tmp/lemonink.zip.
+# The plugin ships with its Composer dependencies bundled under src/vendor,
+# so `src/` is a self-contained plugin directory.
+
+composer install --no-dev --no-interaction --optimize-autoloader
+
+rm -rf tmp/lemonink tmp/lemonink.zip
+mkdir -p tmp/lemonink
+cp -r src/. tmp/lemonink/
+cp LICENSE tmp/lemonink/
+
+(cd tmp && zip -r -q -X lemonink.zip lemonink)
+echo "Built tmp/lemonink.zip"

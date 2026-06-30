@@ -1,4 +1,9 @@
 /tmp
 /dist
 /svn
-/vendor
+/wp-content
+/node_modules
+/.env
+/.wp-env.override.json
+/playwright-report
+/test-results
