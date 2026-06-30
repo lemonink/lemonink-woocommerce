@@ -22,10 +22,11 @@ host (or the dev environment), never bundled.
 
 - **Build**: `bin/build` → `composer install --no-dev` then zips `src/` (+ `LICENSE`) to
   `tmp/lemonink.zip`.
-- **Release**: `SVN_USERNAME=… SVN_PASSWORD=… bin/release <version>` — builds and commits/
-  tags to the WordPress.org SVN repo. Credentials come from the environment (an untracked
-  `.env`), never the script. Bump the version in **both** `src/lemonink.php` (plugin
-  header) and `src/readme.txt` (`Stable tag`) before releasing.
+- **Version**: `bin/bump-version major|minor|patch|<X.Y.Z>` sets the version everywhere it
+  lives (plugin header, readme `Stable tag`, `package.json`).
+- **Release**: `SVN_USERNAME=… SVN_PASSWORD=… bin/release major|minor|patch|<X.Y.Z>` — sets
+  the version via `bin/bump-version`, builds, then commits/tags to the WordPress.org SVN
+  repo. Credentials come from the environment (an untracked `.env`), never the script.
 
 ## Development & testing
 

@@ -1,15 +1,21 @@
 #!/bin/bash
 set -e
+cd "$(dirname "$0")/.."
 
 # Publish a release to the WordPress.org plugin SVN repository.
-# Usage: SVN_USERNAME=... SVN_PASSWORD=... bin/release <version>
-# Credentials are read from the environment (e.g. an untracked .env) and must
-# never be committed.
+# Usage: SVN_USERNAME=... SVN_PASSWORD=... bin/release major|minor|patch|<X.Y.Z>
+# The version argument sets the plugin version (header, readme, package.json)
+# via bin/bump-version, then that version is built and tagged. Credentials are
+# read from the environment (e.g. an untracked .env) and must never be committed.
 
-VERSION="$1"
-: "${VERSION:?Usage: bin/release <version>}"
+ARG="$1"
+: "${ARG:?Usage: bin/release major|minor|patch|<X.Y.Z>}"
 : "${SVN_USERNAME:?Set SVN_USERNAME in your environment}"
 : "${SVN_PASSWORD:?Set SVN_PASSWORD in your environment}"
+
+# Set the version in all source files (validates ARG; aborts on bad input).
+bin/bump-version "$ARG"
+VERSION=$(grep -oE 'Version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+' src/lemonink.php | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
 bin/build
 
