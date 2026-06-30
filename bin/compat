@@ -38,6 +38,7 @@ for WP in "${WP_VERSIONS[@]}"; do
 	echo " Booting WordPress: $WP"
 	echo "============================================================"
 
+	wp_label="$WP"
 	if [ "$WP" = "latest" ]; then
 		echo '{}' > "$OVERRIDE"
 	else
@@ -46,9 +47,14 @@ for WP in "${WP_VERSIONS[@]}"; do
 
 	if ! npx wp-env start --update >/dev/null 2>&1; then
 		echo "  !! wp-env failed to start WordPress $WP"
-		for WC in "${WC_VERSIONS[@]}"; do results+=("WP $WP | WC $WC | ENV-FAIL"); done
+		for WC in "${WC_VERSIONS[@]}"; do results+=("WP $wp_label | WC $WC | ENV-FAIL"); done
 		continue
 	fi
+
+	# Show what "latest" (or a zip ref) actually resolved to.
+	wp_resolved=$(npx wp-env run cli wp core version 2>/dev/null | clean | tr -d '[:space:]')
+	[ "$WP" = "latest" ] && wp_label="latest ($wp_resolved)"
+	echo "  WordPress resolved to $wp_resolved"
 
 	for WC in "${WC_VERSIONS[@]}"; do
 		echo "------------------------------------------------------------"
@@ -72,9 +78,15 @@ for WP in "${WP_VERSIONS[@]}"; do
 		if [ "$wc_loaded" != "yes" ]; then
 			echo "  !! WooCommerce is not loaded on WordPress $WP — smoke skipped:"
 			echo "$wc_install" | clean | grep -iE "Warning|Error" | sed 's/^/     /'
-			results+=("WP $WP | WC $WC | WC-NOT-LOADED")
+			results+=("WP $wp_label | WC $WC | WC-NOT-LOADED")
 			continue
 		fi
+
+		# Show what "latest" (or a pinned spec) actually resolved to.
+		wc_resolved=$(npx wp-env run cli wp plugin get woocommerce --field=version 2>/dev/null | clean | tr -d '[:space:]')
+		wc_label="$WC"
+		[ "$WC" = "latest" ] && wc_label="latest ($wc_resolved)"
+		echo "  WooCommerce resolved to $wc_resolved"
 
 		# Reset the log and store the API key for this run.
 		npx wp-env run cli sh -c ": > $DEBUG_LOG" >/dev/null 2>&1 || true
@@ -100,7 +112,7 @@ for WP in "${WP_VERSIONS[@]}"; do
 			[ "$smoke_status" = "PASS" ] && smoke_status="LOG-ERRORS"
 		fi
 
-		results+=("WP $WP | WC $WC | $smoke_status")
+		results+=("WP $wp_label | WC $wc_label | $smoke_status")
 	done
 done
 
