@@ -3,6 +3,7 @@
 	"core": null,
 	"mappings": {
 		"wp-content/plugins/lemonink": "./src",
+		"wp-content/plugins/lemonink-released": "./tmp/lemonink-released",
 		"wp-content/lemonink-dev": "./tests/support/wp"
 	},
 	"config": {

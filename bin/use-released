@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Install the WordPress.org-released plugin into the dev instance as a SEPARATE
+# plugin (wp-content/plugins/lemonink-released) and switch to it, so your local
+# ./src (mounted at wp-content/plugins/lemonink) is never overwritten. Only one
+# copy can be active at a time — this deactivates the local src copy.
+# Usage: bin/use-released [version]      (default: latest stable on WordPress.org)
+
+VERSION="${1:-}"
+DEST="tmp/lemonink-released"
+if [ -n "$VERSION" ]; then
+	URL="https://downloads.wordpress.org/plugin/lemonink.${VERSION}.zip"
+else
+	URL="https://downloads.wordpress.org/plugin/lemonink.zip"
+fi
+
+echo "Downloading $URL ..."
+rm -rf tmp/_released_extract tmp/_released.zip
+mkdir -p "$DEST" tmp/_released_extract
+curl -fsSL "$URL" -o tmp/_released.zip
+unzip -q tmp/_released.zip -d tmp/_released_extract
+# Replace DEST's contents in place. Do NOT delete DEST itself: it is bind-mounted
+# into the running container, and removing/recreating it would leave the
+# container attached to the old (empty) directory inode. The zip contains a
+# top-level lemonink/ directory.
+find "$DEST" -mindepth 1 -delete
+cp -r tmp/_released_extract/lemonink/. "$DEST"/
+rm -rf tmp/_released_extract tmp/_released.zip
+
+npx wp-env run cli wp plugin deactivate lemonink >/dev/null 2>&1 || true
+if ! npx wp-env run cli wp plugin activate lemonink-released >/dev/null 2>&1; then
+	echo "Could not activate lemonink-released — the env predates the mapping." >&2
+	echo "Restart it so the mapping takes effect:  bin/dev" >&2
+	exit 1
+fi
+
+echo
+echo "Now running the RELEASED plugin (wp-content/plugins/lemonink-released):"
+npx wp-env run cli wp plugin list --fields=name,status,version 2>&1 | grep -iE "lemonink" || true
+echo "Switch back to your local src with: bin/use-src"

@@ -6,6 +6,10 @@ cd "$(dirname "$0")/.."
 # plugin mounted live from ./src. PHP edits in src/ are picked up immediately;
 # no rebuild needed.
 
+# The lemonink-released mapping source must exist before wp-env starts; it's
+# populated on demand by bin/use-released.
+mkdir -p tmp/lemonink-released
+
 npx wp-env start "$@"
 
 # Install WooCommerce into a canonical "woocommerce" folder (idempotent) and

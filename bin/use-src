@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Switch the dev instance back to your local ./src copy of the plugin, undoing
+# bin/use-released.
+
+npx wp-env run cli wp plugin deactivate lemonink-released >/dev/null 2>&1 || true
+npx wp-env run cli wp plugin activate lemonink >/dev/null
+echo "Now running your local ./src (wp-content/plugins/lemonink)."
