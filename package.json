@@ -6,8 +6,8 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "bin/dev",
-		"stop": "wp-env stop",
-		"destroy": "wp-env destroy",
+		"stop": "bin/stop",
+		"destroy": "bin/stop --destroy",
 		"wp": "wp-env run cli wp",
 		"seed": "bin/seed",
 		"use-released": "bin/use-released",

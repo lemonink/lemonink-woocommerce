@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Stop the local dev environment started by bin/dev. Containers are stopped but
+# data (DB, installed plugins) is kept, so bin/dev brings it back up unchanged.
+# Pass --destroy to delete everything for a clean slate instead.
+
+if [ "$1" = "--destroy" ]; then
+	exec npx wp-env destroy
+fi
+
+exec npx wp-env stop
