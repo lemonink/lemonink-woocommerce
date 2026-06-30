@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Tail (or dump) the WordPress debug log from the dev environment.
+# Usage: bin/logs            print the current debug.log
+#        bin/logs -f         follow the log
+#        bin/logs --clear    truncate the log
+case "$1" in
+	--clear)
+		npx wp-env run cli sh -c ': > /var/www/html/wp-content/debug.log' || true
+		echo "debug.log cleared"
+		;;
+	-f|--follow)
+		npx wp-env run cli tail -f /var/www/html/wp-content/debug.log
+		;;
+	*)
+		npx wp-env run cli sh -c 'cat /var/www/html/wp-content/debug.log 2>/dev/null || echo "(debug.log is empty)"'
+		;;
+esac

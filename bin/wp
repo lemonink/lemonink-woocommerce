@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Thin wrapper around wp-cli inside the dev environment.
+# Example: bin/wp plugin list   |   bin/wp option get woocommerce_lemonink_settings
+exec npx wp-env run cli wp "$@"

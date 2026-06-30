@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Start (or update) the local WordPress + WooCommerce dev environment with the
+# plugin mounted live from ./src. PHP edits in src/ are picked up immediately;
+# no rebuild needed.
+
+npx wp-env start "$@"
+
+# Install WooCommerce into a canonical "woocommerce" folder (idempotent) and
+# activate it alongside lemonink, which is mounted via "mappings".
+WC_VERSION="${WC_VERSION:-}"
+if [ -n "$WC_VERSION" ]; then
+	npx wp-env run cli wp plugin install woocommerce --version="$WC_VERSION" --force --activate >/dev/null
+else
+	npx wp-env run cli wp plugin install woocommerce --activate >/dev/null
+fi
+npx wp-env run cli wp plugin activate lemonink >/dev/null
+
+cat <<'EOF'
+
+Dev environment ready:
+  Store:    http://localhost:8888
+  WP admin: http://localhost:8888/wp-admin   (admin / password)
+
+  bin/seed    configure the API key + create a watermarked product
+  bin/wp ...  run wp-cli   (e.g. bin/wp plugin list)
+  bin/logs    tail the PHP debug log
+  npm stop    stop the environment   |   npm run destroy   reset it
+EOF

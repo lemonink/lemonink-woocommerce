@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Seed the dev store into a reproducible state for debugging: set the LemonInk
+# API key and create a watermarked downloadable product with its files
+# generated from a real master. Reads credentials from .env.
+
+[ -f .env ] && set -a && . ./.env && set +a
+: "${LEMONINK_API_KEY:?Set LEMONINK_API_KEY in .env (copy .env.example to .env)}"
+: "${LEMONINK_MASTER_ID:?Set LEMONINK_MASTER_ID in .env}"
+
+echo "Setting LemonInk API key..."
+bin/wp option update woocommerce_lemonink_settings --format=json \
+	"{\"api_key\":\"$LEMONINK_API_KEY\"}" >/dev/null
+
+echo "Creating watermarked product..."
+PID=$(bin/wp wc product create --name="Seed Ebook (LemonInk)" \
+	--type=simple --virtual=1 --downloadable=1 --regular_price=10 \
+	--status=publish --user=1 --porcelain | tr -d '\r')
+
+bin/wp post meta update "$PID" _li_lemoninkable yes >/dev/null
+bin/wp post meta update "$PID" _li_master_id "$LEMONINK_MASTER_ID" >/dev/null
+
+echo "Generating downloadable files from master $LEMONINK_MASTER_ID..."
+bin/wp eval-file wp-content/lemonink-dev/generate-files.php "$PID"
+
+echo
+echo "Seeded product #$PID:"
+echo "  http://localhost:8888/wp-admin/post.php?post=$PID&action=edit"
