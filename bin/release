@@ -8,10 +8,12 @@ cd "$(dirname "$0")/.."
 # via bin/bump-version, then that version is built and tagged. Credentials are
 # read from the environment (e.g. an untracked .env) and must never be committed.
 
+[ -f .env ] && set -a && . ./.env && set +a
+
 ARG="$1"
 : "${ARG:?Usage: bin/release major|minor|patch|<X.Y.Z>}"
-: "${SVN_USERNAME:?Set SVN_USERNAME in your environment}"
-: "${SVN_PASSWORD:?Set SVN_PASSWORD in your environment}"
+: "${SVN_USERNAME:?Set SVN_USERNAME in your environment or .env}"
+: "${SVN_PASSWORD:?Set SVN_PASSWORD in your environment or .env}"
 
 # Set the version in all source files (validates ARG; aborts on bad input).
 bin/bump-version "$ARG"
