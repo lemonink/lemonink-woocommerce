@@ -1,0 +1,101 @@
+#!/bin/bash
+set -u
+cd "$(dirname "$0")/.."
+
+# Automated WordPress/WooCommerce compatibility matrix.
+#
+# For each (WP, WC) pair: boot that exact stack with the plugin mounted, set the
+# API key, run the in-WordPress smoke checks (tests/support/wp/smoke.php) which
+# exercise the real hooks + LemonInk API, and fail the cell if the smoke checks
+# fail OR the debug log contains a PHP error referencing the plugin.
+#
+# Edit the matrix below to suit. "latest" means the newest available version.
+
+WP_VERSIONS=("latest" "6.7")
+WC_VERSIONS=("latest" "9.0.0")
+
+# ---------------------------------------------------------------------------
+
+[ -f .env ] && set -a && . ./.env && set +a
+: "${LEMONINK_API_KEY:?Set LEMONINK_API_KEY in .env (copy .env.example to .env)}"
+: "${LEMONINK_MASTER_ID:?Set LEMONINK_MASTER_ID in .env}"
+
+OVERRIDE=".wp-env.override.json"
+DEBUG_LOG="/var/www/html/wp-content/debug.log"
+trap 'rm -f "$OVERRIDE"' EXIT
+
+# Strip wp-env / shell noise so script output stays readable.
+clean() { grep -vE "zoxide|configuration issue|ensure that|persists|filing an|Disable this|Starting '|✔ Ran|^ℹ|^$"; }
+wp() { npx wp-env run cli wp "$@" 2>&1 | clean; }
+
+results=()
+
+for WP in "${WP_VERSIONS[@]}"; do
+	echo "============================================================"
+	echo " Booting WordPress: $WP"
+	echo "============================================================"
+
+	if [ "$WP" = "latest" ]; then
+		echo '{}' > "$OVERRIDE"
+	else
+		printf '{ "core": "https://wordpress.org/wordpress-%s.zip" }\n' "$WP" > "$OVERRIDE"
+	fi
+
+	if ! npx wp-env start --update >/dev/null 2>&1; then
+		echo "  !! wp-env failed to start WordPress $WP"
+		for WC in "${WC_VERSIONS[@]}"; do results+=("WP $WP | WC $WC | ENV-FAIL"); done
+		continue
+	fi
+
+	for WC in "${WC_VERSIONS[@]}"; do
+		echo "------------------------------------------------------------"
+		echo " WordPress $WP  +  WooCommerce $WC"
+		echo "------------------------------------------------------------"
+
+		if [ "$WC" = "latest" ]; then
+			wp plugin install woocommerce --force --activate >/dev/null
+		else
+			wp plugin install woocommerce --version="$WC" --force --activate >/dev/null
+		fi
+		wp plugin activate lemonink >/dev/null
+
+		# Reset the log and store the API key for this run.
+		npx wp-env run cli sh -c ": > $DEBUG_LOG" >/dev/null 2>&1 || true
+		wp option update woocommerce_lemonink_settings --format=json \
+			"{\"api_key\":\"$LEMONINK_API_KEY\"}" >/dev/null
+
+		# Run smoke checks (non-zero exit on assertion failure).
+		smoke_status="PASS"
+		if ! npx wp-env run cli wp eval-file wp-content/lemonink-dev/smoke.php "$LEMONINK_MASTER_ID" 2>&1 | clean; then
+			smoke_status="SMOKE-FAIL"
+		fi
+
+		# Fail on any PHP error/warning/fatal that references the plugin.
+		plugin_errors=$(npx wp-env run cli sh -c \
+			"grep -iE 'PHP (Fatal|Warning|Parse|Error)' $DEBUG_LOG 2>/dev/null | grep -i 'plugins/lemonink' || true" 2>/dev/null | clean)
+		if [ -n "$plugin_errors" ]; then
+			echo "  !! plugin errors in debug.log:"
+			echo "$plugin_errors" | sed 's/^/     /'
+			[ "$smoke_status" = "PASS" ] && smoke_status="LOG-ERRORS"
+		fi
+
+		results+=("WP $WP | WC $WC | $smoke_status")
+	done
+done
+
+echo
+echo "============================================================"
+echo " Compatibility summary"
+echo "============================================================"
+overall=0
+for r in "${results[@]}"; do
+	if echo "$r" | grep -q "PASS"; then
+		printf '  \033[32m✓\033[0m  %s\n' "$r"
+	else
+		printf '  \033[31m✗\033[0m  %s\n' "$r"
+		overall=1
+	fi
+done
+echo
+[ "$overall" = 0 ] && echo "All combinations passed." || echo "Some combinations failed."
+exit "$overall"

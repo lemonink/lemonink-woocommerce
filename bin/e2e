@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Run the Playwright end-to-end suite against the local dev environment on the
+# currently running WP/WooCommerce version. Requires `bin/dev` to be up and a
+# LemonInk test-mode key in .env. Pass through extra Playwright args, e.g.
+#   bin/e2e --ui
+#   bin/e2e tests/e2e/01-plugin-settings.spec.js
+
+[ -f .env ] && set -a && . ./.env && set +a
+
+if [ -z "$(ls -d "${HOME}/.cache/ms-playwright/"chromium* 2>/dev/null)" ]; then
+	echo "Installing Playwright Chromium..."
+	npx playwright install chromium
+fi
+
+exec npx playwright test "$@"
