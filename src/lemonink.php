@@ -8,7 +8,7 @@
  * Author: LemonInk
  * Author URI: https://www.lemonink.co/
  * Requires at least: 4.4
- * Tested up to: 6.9
+ * Tested up to: 7.0
  *
  * Text Domain: lemonink
  * Domain Path: /languages/
