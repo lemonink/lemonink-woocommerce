@@ -21,14 +21,27 @@ VERSION=$(grep -oE 'Version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+' src/lemonink.php
 
 bin/build
 
+# Always start from a fresh checkout. A stale svn/ working copy left by a
+# previous (possibly interrupted) release can carry cruft — e.g. unversioned
+# vendor/.git files under an old tag — that svn add would otherwise commit.
+rm -rf svn
 svn checkout "https://plugins.svn.wordpress.org/lemonink/" svn \
   --username="$SVN_USERNAME" --password="$SVN_PASSWORD"
 
-mv tmp/lemonink/assets/* svn/assets/ 2>/dev/null || true
-cp -r tmp/lemonink/* svn/trunk/
+# Mirror trunk to the freshly built (clean) plugin: --delete removes stale
+# files from older releases (including any vendor/.git ever committed), while
+# --exclude='.svn/' preserves SVN's own admin dirs. The WP.org /assets images
+# live under assets/, not trunk/, so they are excluded here and copied below.
+mkdir -p svn/trunk svn/assets
+rsync -a --delete --exclude='.svn/' --exclude='/assets/' tmp/lemonink/ svn/trunk/
+cp -r tmp/lemonink/assets/* svn/assets/ 2>/dev/null || true
 
 cd svn
+
+# Stage adds/deletes within trunk and assets only (never touch existing tags).
+svn add --force trunk assets >/dev/null
+svn status trunk assets | awk '/^!/ { print $2 }' | xargs -r svn rm >/dev/null
+
 svn cp trunk "tags/$VERSION"
-svn add --force .
 svn commit -m "Tagging version $VERSION" \
   --username="$SVN_USERNAME" --password="$SVN_PASSWORD"
