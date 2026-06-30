@@ -3,7 +3,7 @@
         'name' => 'lemonink/lemonink-woocommerce',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'f87011cd4799e8b256cb1ae35e8c5d14a8292fa3',
+        'reference' => '1e9f73e837ae0cfacf39e646a9e4a76fc368f0d5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'lemonink/lemonink-woocommerce' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'f87011cd4799e8b256cb1ae35e8c5d14a8292fa3',
+            'reference' => '1e9f73e837ae0cfacf39e646a9e4a76fc368f0d5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),
