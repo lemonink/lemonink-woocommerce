@@ -1,13 +1,13 @@
 {
 	"name": "lemonink-woocommerce",
-	"version": "0.8.6",
+	"version": "0.9.0",
 	"private": true,
 	"description": "Dev/test tooling for the LemonInk WooCommerce plugin",
 	"license": "MIT",
 	"scripts": {
 		"dev": "bin/dev",
-		"stop": "wp-env stop",
-		"destroy": "wp-env destroy",
+		"stop": "bin/stop",
+		"destroy": "bin/stop --destroy",
 		"wp": "wp-env run cli wp",
 		"seed": "bin/seed",
 		"use-released": "bin/use-released",

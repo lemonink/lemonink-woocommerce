@@ -83,4 +83,40 @@ if ( 'redirect' !== $handler->download_method( 'force', $product_id ) ) {
 $ok( 'download method forced to redirect' );
 
 wp_delete_post( $product_id, true );
+
+// 6. Readium LCP sales are grouped under one passphrase per buyer: per customer
+//    of this store, or per order for guests. Never keyed on the billing email.
+$order_helper = ( new ReflectionClass( 'WC_LemonInk_Order' ) )->newInstanceWithoutConstructor(); // no hooks
+$lcp_customer_ref = new ReflectionMethod( 'WC_LemonInk_Order', 'lcp_customer_ref' );
+$lcp_customer_ref->setAccessible( true );
+
+$store = wp_parse_url( home_url(), PHP_URL_HOST ) . untrailingslashit( (string) wp_parse_url( home_url(), PHP_URL_PATH ) );
+$order = wc_create_order();
+$order->set_billing_email( 'buyer@example.com' );
+
+$guest_ref = $lcp_customer_ref->invoke( $order_helper, $order );
+$expected = "woocommerce:{$store}/order:{$order->get_id()}";
+$order->set_customer_id( 42 );
+$customer_ref = $lcp_customer_ref->invoke( $order_helper, $order );
+$order->delete( true );
+
+if ( $guest_ref !== $expected ) {
+	$fail( "guest LCP customer ref was '$guest_ref', expected '$expected'" );
+}
+if ( "woocommerce:{$store}/customer:42" !== $customer_ref ) {
+	$fail( "customer LCP customer ref was '$customer_ref'" );
+}
+$ok( 'LCP customer ref groups by store customer, or by order for guests' );
+
+// 7. The bundled API client sends lcp_params, and keeps them when the API's
+//    response (which never echoes them) is read back into the model.
+$transaction = new LemonInk\Models\Transaction();
+$transaction->setLcpParams( array( 'customer_ref' => $customer_ref ) );
+$transaction->setAttributes( array( 'id' => 'x', 'token' => 'y' ) );
+$sent = $transaction->toArray();
+if ( ! isset( $sent['lcpParams']['customer_ref'] ) || $sent['lcpParams']['customer_ref'] !== $customer_ref ) {
+	$fail( 'LemonInk client does not send lcp_params — is lemonink-php >= 1.2.0 bundled?' );
+}
+$ok( 'API client sends lcp_params' );
+
 WP_CLI::success( 'smoke checks passed' );

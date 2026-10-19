@@ -34,6 +34,11 @@ class Base
   public function setAttributes($attributes)
   {
     foreach (array_merge(["id"], $this->attributeNames) as $attribute) {
+      // Write-only attributes (e.g. a transaction's lcpParams) are not echoed back
+      // by the API; keep the value that was sent.
+      if (!array_key_exists($attribute, $attributes)) {
+        continue;
+      }
       $setter = "set" . ucfirst($attribute);
       $this->$setter($attributes[$attribute]);
     }

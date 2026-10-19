@@ -62,11 +62,19 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 
 					$user = $this->settings->get_api_client()->find( 'user', 'me' );
 
+					$order = new WC_Order( $download_data['order_id'] );
+
 					$transaction = new LemonInk\Models\Transaction();
 					$transaction->setMasterId( $master_id );
 
+					// The API only reads lcp_params on Readium LCP sales and ignores them on
+					// watermarked ones; the plugin can't tell which this will be, so always send.
+					$lcp_customer_ref = $this->lcp_customer_ref( $order );
+					if ( $lcp_customer_ref ) {
+						$transaction->setLcpParams( array( 'customer_ref' => $lcp_customer_ref ) );
+					}
+
 					if ( !empty( $user->getWatermarkParams() ) ) {
-						$order = new WC_Order( $download_data['order_id'] );
 						$transaction->setWatermarkParams( $this->watermark_params( $user->getWatermarkParams(), $order ) );
 					} else {
 						$watermark_value = WC_LemonInk_Order_Metadata::get_watermark_value( $download_data['order_id'] );
@@ -91,6 +99,28 @@ if ( ! class_exists( 'WC_LemonInk_Order' ) ) :
 		public function update_order_meta( $order_id, $data )
 		{
 			add_post_meta( $order_id, '_li_watermark_value', $this->watermark_value( $order_id, $data['billing_email'] ) );
+		}
+
+		/**
+		 * Groups a buyer's Readium LCP sales under one passphrase: every book a
+		 * registered customer buys from this store, or every book in one guest order.
+		 * The store is part of the ref so two stores' customer #1 never share a
+		 * passphrase. Never key this on the billing email: anyone can type someone
+		 * else's address at checkout and read their passphrase.
+		 */
+		private function lcp_customer_ref( $order ) {
+			$home = wp_parse_url( home_url() );
+			if ( empty( $home['host'] ) ) {
+				return null;
+			}
+			$store = $home['host'] . ( isset( $home['path'] ) ? untrailingslashit( $home['path'] ) : '' );
+
+			$customer_id = $order->get_customer_id();
+			if ( $customer_id ) {
+				return "woocommerce:{$store}/customer:{$customer_id}";
+			}
+
+			return "woocommerce:{$store}/order:{$order->get_id()}";
 		}
 
 		private function is_lemoninkable_download( $download_id ) {
