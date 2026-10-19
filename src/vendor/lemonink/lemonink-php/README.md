@@ -23,3 +23,15 @@ $client->save($transaction);
 echo "Download your file from {$transaction->getUrl()}\n";
 
 ````
+
+### Readium LCP
+
+On an account (or master) that protects files with Readium LCP, pass a stable
+`customer_ref` so every book one buyer purchases opens with the same passphrase.
+Without it each transaction gets its own passphrase. Never derive the ref from an
+email address the buyer typed: anyone could type someone else's and read their
+passphrase.
+
+````PHP
+$transaction->setLcpParams(["customer_ref" => "my-store/customer:42"]);
+````
